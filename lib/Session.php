@@ -37,5 +37,32 @@ class Session {
         return false;
     }
 
+    /**
+     * Set the login status in the session.
+     *
+     * @param bool $bool The login status to set (true for logged in, false for logged out).
+     */
+    public static function setLogin($bool){
+        self::init();
+        self::set('login', $bool);
+    }
+
+    /**
+     * Check if a user is logged in.
+     *
+     * @return bool True if the user is logged in, false otherwise.
+     */
+    public static function checkLogin(){
+        self::init();
+        return self::get('login') ? true : false;
+    }
+
+    /**
+     * Destroy the session and redirect to the login page.
+     */
+    public static function destroy(){
+        session_destroy();
+        header("Location: login.php");
+    }
 }
 ?>
