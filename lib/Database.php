@@ -28,16 +28,16 @@ class Database {
 
     //insert or update data
     public function insert($query, $markerDataTypes = "", $values = []){
-        $queryStatement = $this -> connection -> prepare($query);
-        $queryStatement -> bind_param($markerDataTypes, ...$values);
-        return $queryStatement->execute();
+        $preparedStatement = $this -> connection -> prepare($query);
+        $preparedStatement -> bind_param($markerDataTypes, ...$values);
+        return $preparedStatement->execute();
     }
 
     //select data
     public function select($query, $markerDataTypes = "", $values = []){
-        $queryStatement = $this -> connection -> prepare($query);
-        $queryStatement -> bind_param($markerDataTypes, ...$values);
-        $result = $queryStatement -> execute();
+        $preparedStatement = $this -> connection -> prepare($query);
+        $preparedStatement -> bind_param($markerDataTypes, ...$values);
+        $result = $preparedStatement -> execute();
         if($result -> num_rows > 0){
             return $result;
         } else {
