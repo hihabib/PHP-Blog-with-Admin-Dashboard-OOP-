@@ -54,7 +54,7 @@ class Session {
      */
     public static function checkLogin(){
         self::init();
-        return self::get('login') ? true : false;
+        return self::get('login') || false;
     }
 
     /**
