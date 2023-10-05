@@ -62,6 +62,7 @@ class Session {
      */
     public static function destroy(){
         session_destroy();
+        self::setLogin(false);
         header("Location: login.php");
     }
 }
