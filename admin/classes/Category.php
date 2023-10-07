@@ -33,14 +33,29 @@
      * @param string $catName New category name
      * @param Status $catStatus new category status (ACCEPT "active" or "inactive" only)
      * 
-     * @return bool If category added successfully, then returns true. Otherwise false.
+     * @return bool|Object If category added successfully, then returns true. If cannot
+     * add category in database, then it will return false. If the category is already exists, it will return a error object which contain $messsage and $errCode property
      */
     public function addCategory($catName, Status $catStatus){
-        return $this -> database -> insert(
-            "INSERT INTO categories (category_name, category_status) VALUES(?, ?)",
-            "ss",
-            [$catName, $catStatus->value]
+        $result = $this -> database -> select(
+            "SELECT * FROM categories WHERE category_name = ?",
+            "s",
+            [$catName]
         );
+        //check if the category is not exists
+        if($result -> num_rows < 0) {
+            return $this -> database -> insert(
+                "INSERT INTO categories (category_name, category_status) VALUES(?, ?)",
+                "sss",
+                [$catName, $catStatus->value, $catName]
+            );
+
+        } else {
+            return new Class {
+                public $message = "Category Already Exists";
+                public $errCode = 401;
+            };
+        }
     }
 
     /**

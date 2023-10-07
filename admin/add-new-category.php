@@ -25,8 +25,10 @@ if ("POST" == $_SERVER['REQUEST_METHOD']) {
         $error = "Please enter category name";
     } else {
         $category = new Category();
-        $isCategoryAdded = $category->addCategory($categoryName, $categoryStatus);
-        if(!$isCategoryAdded){
+        $addedCategory = $category->addCategory($categoryName, $categoryStatus);
+        if(is_object($addedCategory)){
+            $error = $addedCategory -> message;
+        } else if(!$addedCategory){
             $error = "Something is wrong. Please try again";
         }
     }
@@ -43,7 +45,7 @@ if ("POST" == $_SERVER['REQUEST_METHOD']) {
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             <?php endif; ?>
-            <?php if( isset($isCategoryAdded) && true == $isCategoryAdded) : ?>
+            <?php if( isset($addedCategory) && is_bool($addedCategory) && true == $addedCategory) : ?>
                 <div class="alert alert-success alert-dismissible my-3 mx-4" role="alert">
                     Category Added Successfully.
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
