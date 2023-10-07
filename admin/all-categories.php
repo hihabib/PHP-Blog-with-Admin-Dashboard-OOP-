@@ -1,9 +1,9 @@
-<?php 
+<?php
 // initialize necessary script
 include_once('inc/init.php');
 
 // check login. If the user is not logged in user, then redirect the user to the login page
-if(false == Session::checkLogin()){
+if (false == Session::checkLogin()) {
     header("Location: login.php");
     die();
 }
@@ -12,7 +12,8 @@ if(false == Session::checkLogin()){
 $mainMenu = "Category";
 $subMenu = "All Caregories";
 
-include_once('inc/header.php'); 
+include_once('inc/header.php');
 ?>
-hello world
+<h1>Content goes here</h1>
+
 <?php include_once('inc/footer.php'); ?>

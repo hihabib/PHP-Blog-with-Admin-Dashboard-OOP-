@@ -67,8 +67,8 @@
                         <div data-i18n="All Caregories">All Caregories</div>
                     </a>
                 </li>
-                <li class="menu-item">
-                    <a href="layouts-without-menu.php" class="menu-link">
+                <li class="menu-item <?php echo $subMenu  == "Add New" ? "active" : ""; ?>">
+                    <a href="add-new-category.php" class="menu-link">
                         <div data-i18n="Add New">Add New</div>
                     </a>
                 </li>
