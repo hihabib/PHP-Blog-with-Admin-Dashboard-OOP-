@@ -42,4 +42,18 @@
             [$catName, $catStatus->value]
         );
     }
+
+    /**
+     * List of all categories
+     * 
+     * @return array|false Returns Array of categories if query successfully executes. Otherwise return false
+     */
+    public function getAllCategories(){
+        $result = $this -> database -> select("SELECT category_name, category_status FROM categories");
+        if(false != $result){
+            return $result -> fetch_all(MYSQLI_ASSOC) ?? [];
+        } else {
+            return false;
+        }
+    }
  }

@@ -77,7 +77,10 @@ class Database {
      */
     public function insert($query, $markerDataTypes = "", $values = []){
         $preparedStatement = $this->connection->prepare($query);
-        $preparedStatement->bind_param($markerDataTypes, ...$values);
+        //skip parameter binding if the $values has no element
+        if(count($values) > 0){
+            $preparedStatement->bind_param($markerDataTypes, ...$values);
+        }
         return $preparedStatement->execute();
     }
 
@@ -92,7 +95,10 @@ class Database {
      */
     public function select($query, $markerDataTypes = "", $values = []){
         $preparedStatement = $this->connection->prepare($query);
-        $preparedStatement->bind_param($markerDataTypes, ...$values);
+        //skip parameter binding if the $values has no element
+        if(count($values) > 0){
+            $preparedStatement->bind_param($markerDataTypes, ...$values);
+        }
         $execution = $preparedStatement->execute();
         if ($execution) {
             $result = $preparedStatement->get_result();

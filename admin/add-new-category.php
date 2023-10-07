@@ -2,7 +2,7 @@
 // initialize necessary script
 include_once('inc/init.php');
 
-// category class
+// include category 
 include_once("classes/Category.php");
 
 // check login. If the user is not logged in user, then redirect the user to the login page
