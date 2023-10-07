@@ -32,6 +32,14 @@ if(isset($_POST['submit'])){
         // Set the user's login status to true using the Session class
         Session::setLogin(true);
 
+		// Set user details to session
+		$user = $result -> fetch_object();
+		Session::set('id', $user->id);
+		Session::set('username', $user->username);
+		Session::set('role', $user->role);
+		Session::set('first_name', $user->first_name);
+		Session::set('last_name', $user->last_name);
+
         // Redirect the user to the index.php page
         header("Location: index.php");
     }
