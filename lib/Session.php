@@ -10,7 +10,9 @@ class Session {
      * Initialize the session.
      */
     public static function init(){
-        session_start();
+        if(session_status() == PHP_SESSION_NONE){
+            session_start();
+        }
     }
 
     /**
@@ -43,7 +45,6 @@ class Session {
      * @param bool $bool The login status to set (true for logged in, false for logged out).
      */
     public static function setLogin($bool){
-        self::init();
         self::set('login', $bool);
     }
 
@@ -53,7 +54,6 @@ class Session {
      * @return bool True if the user is logged in, false otherwise.
      */
     public static function checkLogin(){
-        self::init();
         return self::get('login') || false;
     }
 

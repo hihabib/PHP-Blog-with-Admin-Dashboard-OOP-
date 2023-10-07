@@ -7,11 +7,12 @@ if(false == Session::checkLogin()){
     header("Location: login.php");
     die();
 }
+
 // Menu and submenu name
-$mainMenu = "Dashboard";
-$subMenu = ""; // No submenu
+$mainMenu = "Category";
+$subMenu = "All Caregories";
 
 include_once('inc/header.php'); 
 ?>
-<!-- Content -->
+hello world
 <?php include_once('inc/footer.php'); ?>

@@ -1,9 +1,10 @@
 <?php
+
 // Check if the 'logout' parameter is set in the URL query string
 if(isset($_GET['logout'])) {
     // Include the Session class for managing sessions
     include_once("../lib/Session.php");
-    
+    Session::init();
     // Call the destroy method of the Session class to end the user's session
     Session::destroy();
     

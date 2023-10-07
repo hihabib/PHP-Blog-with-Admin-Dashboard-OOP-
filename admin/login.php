@@ -1,9 +1,8 @@
 <?php
-// Include the Session class to manage user sessions
-include_once("../lib/Session.php");
+include_once("inc/init.php");
 
 // Check if the user is already logged in. If yes, redirect them to the index.php page.
-if(Session::checkLogin()){
+if(true == Session::checkLogin()){
     header("Location: index.php");
     die();
 }
