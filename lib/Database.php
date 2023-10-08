@@ -67,7 +67,7 @@ class Database {
     }
 
     /**
-     * Inserts data into the database.
+     * Insert or update data into the database.
      *
      * @param string $query The SQL query to execute.
      * @param string $markerDataTypes The data types for prepared statement markers.

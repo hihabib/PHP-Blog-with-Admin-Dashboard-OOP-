@@ -19,8 +19,8 @@ include_once('inc/header.php');
 
 $error = "";
 if ("POST" == $_SERVER['REQUEST_METHOD']) {
-    $categoryName = $_REQUEST['categoryName'] ?? "";
-    $categoryStatus = Status::tryFrom($_REQUEST['categoryStatus'] ?? "inactive") ?? Status::tryFrom('inactive');
+    $categoryName = $_POST['categoryName'] ?? "";
+    $categoryStatus = Status::tryFrom($_POST['categoryStatus'] ?? "inactive") ?? Status::tryFrom('inactive');
     if(strlen($categoryName) <= 0){
         $error = "Please enter category name";
     } else {

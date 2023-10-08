@@ -58,6 +58,28 @@
         }
     }
 
+       
+      
+       
+
+    /**
+     * Edit existing category name
+     *
+     * @param string $oldCatName Old category name to select the category which one to be edited
+     * @param string $newCatName Category new name
+     * @param Status $newCatStatus Category new status
+     * 
+     * @return bool If the update successful, then return true, otherwise false
+     * 
+     */
+    public function editCategory(string $oldCatName, string $newCatName, Status $newCatStatus):bool{
+            $isUpdated = $this -> database -> insert(
+                "UPDATE categories SET category_name = ?, category_status = ? WHERE category_name = ?",
+                "sss",
+                [$newCatName,$newCatStatus -> value, $oldCatName]
+            );
+            return $isUpdated;
+    }
     /**
      * List of all categories
      * 
