@@ -10,12 +10,24 @@ if (false == Session::checkLogin()) {
     header("Location: login.php");
     die();
 }
+// category object to access all its methods
 $category = new Category();
+
+// Edit category on post request
 if ("POST" == $_SERVER['REQUEST_METHOD'] && isset($_POST['editCategory'])) {
     $categoryOldName = $_POST['categoryOldName'] ?? "";
     $categoryNewName = $_POST['categoryNewName'] ?? "";
     $categoryStatus = Status::tryFrom($_POST['categoryStatus'] ?? "") ?? Status::tryFrom('inactive');
     $isUpdated = $category->editCategory($categoryOldName, $categoryNewName, $categoryStatus);
+}
+
+// delete category if $_GET['delete'] is set
+if("GET" == $_SERVER['REQUEST_METHOD'] && isset($_GET['delete'])){
+    $categoryName = $_GET['delete'];
+    $isAvailable = $category -> getCategory($categoryName) -> isAvailable();
+    if(true == $isAvailable){
+        $isDeleted = $category -> deleteCategory($categoryName);
+    }
 }
 // Menu and submenu name
 $mainMenu = "Category";
@@ -25,6 +37,23 @@ include_once('inc/header.php');
 ?>
 <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Category/</span> All Categories</h4>
 <div class="card">
+    <?php if(isset($isAvailable) && false == $isAvailable): ?>
+    <div class="alert alert-danger alert-dismissible my-3 mx-4" role="alert">
+        '<?php echo $categoryName; ?>' category is not available.
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <?php endif; ?>
+    <?php if(isset($isDeleted) && true == $isDeleted): ?>
+    <div class="alert alert-success alert-dismissible my-3 mx-4" role="alert">
+        Category is deleted successfully.
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <?php elseif(isset($isDeleted) && false == $isDeleted): ?>
+    <div class="alert alert-danger alert-dismissible my-3 mx-4" role="alert">
+        Category deletion failed.
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <?php endif; ?>
     <?php if(isset($isUpdated) && true == $isUpdated) : ?>
     <div class="alert alert-success alert-dismissible my-3 mx-4" role="alert">
         Category is updated successfully.
@@ -99,7 +128,7 @@ include_once('inc/header.php');
                                     </div>
                                 </div>
                             </div>
-                            <button type="button" class="btn btn-sm btn-danger">Delete</button>
+                            <a href="?delete=<?php echo $singleCategory['category_name']; ?>" class="btn btn-sm btn-danger">Delete</a>
                         </td>
                     </tr>
                 <?php endforeach; ?>

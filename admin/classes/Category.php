@@ -30,6 +30,42 @@ define("CAT_TABLE", "categories");
     }
 
     /**
+     * Category details by category name
+     *
+     * @param string $catName Category name
+     * 
+     * @return object|bool Return false if no category found. Return object if found. Methods for the returned object are `isAvailable`
+     * 
+     */
+    public function getCategory(string $catName):object|bool{
+        $result = $this -> database -> select(
+            "SELECT * FROM {$this -> tableName} WHERE category_name = ?",
+            "s",
+            [$catName]
+        );
+        if(is_object($result)){
+            return new class($result){
+                private object $result;
+                public function __construct($result)
+                {
+                    $this -> result = $result;
+                }
+                /**
+                 * Get category availability
+                 *
+                 * @return bool true if category is available. Otherwise false
+                 * 
+                 */
+                public function isAvailable():bool{
+                    return $this -> result -> num_rows > 0;
+                }
+            };
+        } else {
+            return false;
+        }
+    }  
+
+    /**
      * Add new category to the database
      * 
      * @param string $catName New category name
@@ -79,6 +115,22 @@ define("CAT_TABLE", "categories");
             return $isUpdated;
     }
 
+    /**
+     * Delete category with category name
+     *
+     * @param string $catName Category Name
+     * 
+     * @return bool Return true if deletion success, otherfalse false
+     * 
+     */
+    public function deleteCategory(string $catName):bool{
+        $category = $this -> database -> select(
+            "SELECT id FROM {$this -> tableName} WHERE category_name = ?",
+            "s",
+            [$catName]
+        ) -> fetch_assoc();
+        return $this -> database -> deleteWithId($this -> tableName, $category['id']);
+    }
   
     /**
      * List of all categories
