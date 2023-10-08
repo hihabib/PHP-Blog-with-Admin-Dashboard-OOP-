@@ -75,13 +75,9 @@ define("CAT_TABLE", "categories");
      * add category in database, then it will return false. If the category is already exists, it will return a error object which contain $messsage and $errCode property
      */
     public function addCategory($catName, Status $catStatus){
-        $result = $this -> database -> select(
-            "SELECT * FROM {$this -> tableName} WHERE category_name = ?",
-            "s",
-            [$catName]
-        );
+        $isAvailable = $this -> getCategory($catName) -> isAvailable();
         //check if the category is not exists
-        if($result -> num_rows < 1) {
+        if(false == $isAvailable) {
             return $this -> database -> insert(
                 "INSERT INTO {$this -> tableName} (category_name, category_status) VALUES(?, ?)",
                 "ss",
