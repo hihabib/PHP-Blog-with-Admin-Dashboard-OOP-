@@ -54,7 +54,27 @@
             </a>
         </li>
 
-        <!-- Layouts -->
+        <!-- Posts -->
+        <li class="menu-item <?php echo $mainMenu  == "Post" ? "active open" : ""; ?>">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-layout"></i>
+                <div data-i18n="Layouts">Post</div>
+            </a>
+
+            <ul class="menu-sub">
+                <li class="menu-item <?php echo $subMenu  == "All Posts" ? "active" : ""; ?>">
+                    <a href="all-posts.php" class="menu-link">
+                        <div data-i18n="All Posts">All Posts</div>
+                    </a>
+                </li>
+                <li class="menu-item <?php echo $subMenu  == "Add New Post" ? "active" : ""; ?>">
+                    <a href="add-new-post.php" class="menu-link">
+                        <div data-i18n="Add New Post">Add New Post</div>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <!-- Category -->
         <li class="menu-item <?php echo $mainMenu  == "Category" ? "active open" : ""; ?>">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bx-layout"></i>
@@ -67,9 +87,9 @@
                         <div data-i18n="All Caregories">All Caregories</div>
                     </a>
                 </li>
-                <li class="menu-item <?php echo $subMenu  == "Add New" ? "active" : ""; ?>">
+                <li class="menu-item <?php echo $subMenu  == "Add New Category" ? "active" : ""; ?>">
                     <a href="add-new-category.php" class="menu-link">
-                        <div data-i18n="Add New">Add New</div>
+                        <div data-i18n="Add New Category">Add New Category</div>
                     </a>
                 </li>
             </ul>

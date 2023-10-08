@@ -13,7 +13,7 @@ if (false == Session::checkLogin()) {
 
 // Menu and submenu name
 $mainMenu = "Category";
-$subMenu = "Add New";
+$subMenu = "Add New Category";
 
 include_once('inc/header.php');
 
@@ -36,7 +36,6 @@ if ("POST" == $_SERVER['REQUEST_METHOD']) {
 ?>
 <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Category/</span> Add new category</h4>
 <div class="row">
-    <!-- Basic with Icons -->
     <div class="col-xxl">
         <div class="card mb-4">
             <?php if(strlen($error) > 0): ?>
