@@ -1,6 +1,6 @@
 <?php
  include_once("../lib/Database.php");
-
+define("CAT_TABLE", "categories");
  /**
   * enum Status
   *
@@ -20,11 +20,13 @@
     /**
      * @var Database The Database object
      */
-    protected $database;
+    protected Database $database;
+    public string $tableName;
 
     public function __construct()
     {
         $this -> database = new Database();
+        $this -> tableName = CAT_TABLE;
     }
 
     /**
@@ -38,16 +40,16 @@
      */
     public function addCategory($catName, Status $catStatus){
         $result = $this -> database -> select(
-            "SELECT * FROM categories WHERE category_name = ?",
+            "SELECT * FROM {$this -> tableName} WHERE category_name = ?",
             "s",
             [$catName]
         );
         //check if the category is not exists
-        if($result -> num_rows < 0) {
+        if($result -> num_rows < 1) {
             return $this -> database -> insert(
-                "INSERT INTO categories (category_name, category_status) VALUES(?, ?)",
-                "sss",
-                [$catName, $catStatus->value, $catName]
+                "INSERT INTO {$this -> tableName} (category_name, category_status) VALUES(?, ?)",
+                "ss",
+                [$catName, $catStatus->value]
             );
 
         } else {
@@ -57,10 +59,6 @@
             };
         }
     }
-
-       
-      
-       
 
     /**
      * Edit existing category name
@@ -74,19 +72,21 @@
      */
     public function editCategory(string $oldCatName, string $newCatName, Status $newCatStatus):bool{
             $isUpdated = $this -> database -> insert(
-                "UPDATE categories SET category_name = ?, category_status = ? WHERE category_name = ?",
+                "UPDATE {$this -> tableName} SET category_name = ?, category_status = ? WHERE category_name = ?",
                 "sss",
                 [$newCatName,$newCatStatus -> value, $oldCatName]
             );
             return $isUpdated;
     }
+
+  
     /**
      * List of all categories
      * 
      * @return array|false Returns Array of categories if query successfully executes. Otherwise return false
      */
     public function getAllCategories(){
-        $result = $this -> database -> select("SELECT category_name, category_status FROM categories");
+        $result = $this -> database -> select("SELECT category_name, category_status FROM {$this -> tableName}");
         if(false != $result){
             return $result -> fetch_all(MYSQLI_ASSOC) ?? [];
         } else {
