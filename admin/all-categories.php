@@ -89,7 +89,7 @@ include_once('inc/header.php');
                                     <div class="modal-content">
                                         <form method="post">
                                             <div class="modal-header">
-                                                <h5 class="modal-title" id="editModalTitle-<?php echo $index + 1; ?>">Modal title</h5>
+                                                <h5 class="modal-title" id="editModalTitle-<?php echo $index + 1; ?>">Edit Category</h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body">
