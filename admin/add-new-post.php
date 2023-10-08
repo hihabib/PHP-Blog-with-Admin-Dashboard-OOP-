@@ -11,6 +11,8 @@ if (false == Session::checkLogin()) {
     die();
 }
 
+$category = new Category();
+
 // Menu and submenu name
 $mainMenu = "Post";
 $subMenu = "Add New Post";
@@ -67,13 +69,23 @@ include_once('inc/header.php');
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <label class="col-sm-2 col-form-label" for="post-status">tags</label>
+                        <label class="col-sm-2 col-form-label" for="post-category">Category</label>
+                        <div class="col-sm-10">
+                            <div class="input-group input-group-merge">
+                                <select id="post-category" class="form-select">
+                                    <?php foreach($category -> getAllCategories() as $singleCategory) : ?>
+                                        <option value="<?php echo $singleCategory['category_name']; ?>"><?php echo $singleCategory['category_name']; ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label class="col-sm-2 col-form-label" for="post-status">Post status</label>
                         <div class="col-sm-10">
                             <div class="input-group input-group-merge">
                                 <select id="post-status" class="form-select">
-                                    <option value="1">One</option>
-                                    <option value="2">Two</option>
-                                    <option value="3">Three</option>
+                                        <option value="published">Published</option>
                                 </select>
                             </div>
                         </div>
