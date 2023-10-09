@@ -1,6 +1,6 @@
 <?php
  include_once("../lib/Database.php");
-define("CAT_TABLE", "categories");
+
  /**
   * enum Status
   *
@@ -18,15 +18,15 @@ define("CAT_TABLE", "categories");
 
  class Category {
     /**
-     * @var Database The Database object
+     * Category table name
+     *
+     * @var string
      */
-    protected Database $database;
     public string $tableName;
 
     public function __construct()
     {
-        $this -> database = new Database();
-        $this -> tableName = CAT_TABLE;
+        $this -> tableName = TBL_CATEGORY;
     }
 
     /**
@@ -38,7 +38,8 @@ define("CAT_TABLE", "categories");
      * 
      */
     public function getCategory(string $catName):object|bool{
-        $result = $this -> database -> select(
+        global $connection;
+        $result = $connection -> select(
             "SELECT * FROM {$this -> tableName} WHERE category_name = ?",
             "s",
             [$catName]
@@ -78,7 +79,8 @@ define("CAT_TABLE", "categories");
         $isAvailable = $this -> getCategory($catName) -> isAvailable();
         //check if the category is not exists
         if(false == $isAvailable) {
-            return $this -> database -> insert(
+            global $connection;
+            return $connection -> insert(
                 "INSERT INTO {$this -> tableName} (category_name, category_status) VALUES(?, ?)",
                 "ss",
                 [$catName, $catStatus->value]
@@ -103,7 +105,8 @@ define("CAT_TABLE", "categories");
      * 
      */
     public function editCategory(string $oldCatName, string $newCatName, Status $newCatStatus):bool{
-            $isUpdated = $this -> database -> insert(
+        global $connection;    
+        $isUpdated = $connection -> insert(
                 "UPDATE {$this -> tableName} SET category_name = ?, category_status = ? WHERE category_name = ?",
                 "sss",
                 [$newCatName,$newCatStatus -> value, $oldCatName]
@@ -120,12 +123,14 @@ define("CAT_TABLE", "categories");
      * 
      */
     public function deleteCategory(string $catName):bool{
-        $category = $this -> database -> select(
+        global $connection;
+        $category = $connection -> select(
             "SELECT id FROM {$this -> tableName} WHERE category_name = ?",
             "s",
             [$catName]
         ) -> fetch_assoc();
-        return $this -> database -> deleteWithId($this -> tableName, $category['id']);
+        global $connection;
+        return $connection -> deleteWithId($this -> tableName, $category['id']);
     }
   
     /**
@@ -134,7 +139,8 @@ define("CAT_TABLE", "categories");
      * @return array|false Returns Array of categories if query successfully executes. Otherwise return false
      */
     public function getAllCategories(){
-        $result = $this -> database -> select("SELECT category_name, category_status FROM {$this -> tableName}");
+        global $connection;
+        $result = $connection -> select("SELECT category_name, category_status FROM {$this -> tableName}");
         if(false != $result){
             return $result -> fetch_all(MYSQLI_ASSOC) ?? [];
         } else {

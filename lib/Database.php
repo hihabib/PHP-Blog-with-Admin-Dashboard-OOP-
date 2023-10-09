@@ -132,3 +132,4 @@ class Database {
     }
 }
 
+$connection = new Database();
