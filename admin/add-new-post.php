@@ -46,7 +46,7 @@ if ("POST" == $_SERVER['REQUEST_METHOD'] && isset($_POST['submitPost'])) {
 
     // Split the file name by dots to extract the file extension
     $splitedName = explode(".", $_FILES['thumbnail']['name']);
-    $extName = end($splitedName);
+    $extName = strtolower(end($splitedName));
 
     // Define an array of allowed image file extensions
     $allowedExtension = ['png', 'jpg', 'jpeg', 'webp'];
