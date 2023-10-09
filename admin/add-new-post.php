@@ -1,17 +1,17 @@
 <?php
-// initialize necessary script
+// Initialize necessary script
 include_once('inc/init.php');
 
-// include category
+// Include necessary classes
 include_once('classes/Category.php');
-// include post
 include_once('classes/Post.php');
 
-// check login. If the user is not logged in user, then redirect the user to the login page
+// Check if the user is logged in; if not, redirect to the login page
 if (false == Session::checkLogin()) {
     header("Location: login.php");
     die();
 }
+
 // Create a new Category object (assuming the Category class is defined elsewhere)
 $category = new Category();
 
@@ -20,14 +20,24 @@ if ("POST" == $_SERVER['REQUEST_METHOD'] && isset($_POST['submitPost'])) {
     // Initialize a variable to store errors related to the post thumbnail
     $thumbnailError = "";
 
-    // Get the post title from the form data (if provided), and HTML-escape it to prevent XSS attacks
+    // Get and sanitize the post title from the form data
     $title = htmlspecialchars($_POST['postTitle']) ?? "";
+
+    // Get and sanitize the post content from the form data
     $content = htmlspecialchars($_POST['postDetailsContainer']) ?? "";
+
+    // Get and sanitize the post slug from the form data
     $slug = htmlspecialchars($_POST['postSlug']);
+
+    // Get and sanitize the post tags from the form data (if provided)
     $tags = htmlspecialchars($_POST['postTags'] ?? "");
+
+    // Get the selected category ID from the form data and ensure it's an integer
     $categoryId = (int)htmlspecialchars($_POST['postCategory'] ?? "");
+
     // Determine the post status from the form data, defaulting to 'Draft'
     $postStatus = PostStatus::tryFrom($_POST["postStatus"] ?? 'Draft') ?? PostStatus::tryFrom("Draft");
+    
     // Get the author's ID from the session (assuming a Session class is used)
     $authorID = (int)Session::get('id');
 
@@ -64,10 +74,6 @@ if ("POST" == $_SERVER['REQUEST_METHOD'] && isset($_POST['submitPost'])) {
         // Define the directory path where the thumbnail will be saved
         $thumbnail_dir = dirname(__DIR__) . "\\uploads\\thumbnail\\$thumbnailName";
 
-        
-
-        
-
         // If the slug field is empty, set an error message
         if (!strlen($slug) > 0) {
             $postDataError = "Slug must not be empty";
@@ -91,8 +97,7 @@ if ("POST" == $_SERVER['REQUEST_METHOD'] && isset($_POST['submitPost'])) {
     }
 }
 
-
-// Menu and submenu name
+// Menu and submenu names
 $mainMenu = "Post";
 $subMenu = "Add New Post";
 
@@ -159,7 +164,7 @@ include_once('inc/header.php');
                         <label class="col-sm-2 col-form-label" for="post-slug">Slug</label>
                         <div class="col-sm-10">
                             <div class="input-group input-group-merge">
-                                <input value="<?php echo isset($slug) ? $slug : ""; ?>"  name="postSlug" type="text" class="form-control" id="post-slug" placeholder="Post slug" aria-label="Post slug" />
+                                <input value="<?php echo isset($slug) ? $slug : ""; ?>" name="postSlug" type="text" class="form-control" id="post-slug" placeholder="Post slug" aria-label="Post slug" />
                             </div>
                         </div>
                     </div>
@@ -167,7 +172,7 @@ include_once('inc/header.php');
                         <label class="col-sm-2 col-form-label" for="post-tags">tags</label>
                         <div class="col-sm-10">
                             <div class="input-group input-group-merge">
-                                <input value="<?php echo isset($tags) ? $tags : ""; ?>"  name="postTags" type="text" class="form-control" id="post-tags" placeholder="Post tags have to saparated by comma" aria-label="Post tags have to saparated by comma" />
+                                <input value="<?php echo isset($tags) ? $tags : ""; ?>" name="postTags" type="text" class="form-control" id="post-tags" placeholder="Post tags have to saparated by comma" aria-label="Post tags have to saparated by comma" />
                             </div>
                         </div>
                     </div>
