@@ -2,10 +2,10 @@
  include_once("../lib/Database.php");
 
  /**
-  * enum Status
+  * enum CategoryStatus
   *
   */
-  enum Status:string {
+  enum CategoryStatus:string {
     case ACTIVE = 'active';
     case INACTIVE = 'inactive';
   }
@@ -70,12 +70,12 @@
      * Add new category to the database
      * 
      * @param string $catName New category name
-     * @param Status $catStatus new category status (ACCEPT "active" or "inactive" only)
+     * @param CategoryStatus $catStatus new category status (ACCEPT "active" or "inactive" only)
      * 
      * @return bool|Object If category added successfully, then returns true. If cannot
      * add category in database, then it will return false. If the category is already exists, it will return a error object which contain $messsage and $errCode property
      */
-    public function addCategory($catName, Status $catStatus){
+    public function addCategory($catName, CategoryStatus $catStatus){
         $isAvailable = $this -> getCategory($catName) -> isAvailable();
         //check if the category is not exists
         if(false == $isAvailable) {
@@ -99,12 +99,12 @@
      *
      * @param string $oldCatName Old category name to select the category which one to be edited
      * @param string $newCatName Category new name
-     * @param Status $newCatStatus Category new status
+     * @param CategoryStatus $newCatStatus Category new status
      * 
      * @return bool If the update successful, then return true, otherwise false
      * 
      */
-    public function editCategory(string $oldCatName, string $newCatName, Status $newCatStatus):bool{
+    public function editCategory(string $oldCatName, string $newCatName, CategoryStatus $newCatStatus):bool{
         global $connection;    
         $isUpdated = $connection -> insert(
                 "UPDATE {$this -> tableName} SET category_name = ?, category_status = ? WHERE category_name = ?",
@@ -140,7 +140,7 @@
      */
     public function getAllCategories(){
         global $connection;
-        $result = $connection -> select("SELECT category_name, category_status FROM {$this -> tableName}");
+        $result = $connection -> select("SELECT id, category_name, category_status FROM {$this -> tableName}");
         if(false != $result){
             return $result -> fetch_all(MYSQLI_ASSOC) ?? [];
         } else {

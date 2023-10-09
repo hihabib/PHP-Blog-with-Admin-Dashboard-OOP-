@@ -50,8 +50,14 @@
 <script src="./assets/js/froala_editor.pkgd.min.js"></script>
 <script>
     if (document.querySelector("#postDetails")) {
-        new FroalaEditor('#postDetails', {
+        document.querySelector("#postDetailsContainer").style.display = 'none';
+        const editor = new FroalaEditor('#postDetails', {
             height: 300
+        }, function() {
+            editor.events.on('blur', () => {
+                document.querySelector("#postDetailsContainer").innerText = editor.html.get();
+            })
+
         });
     }
 </script>

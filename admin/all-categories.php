@@ -17,7 +17,7 @@ $category = new Category();
 if ("POST" == $_SERVER['REQUEST_METHOD'] && isset($_POST['editCategory'])) {
     $categoryOldName = $_POST['categoryOldName'] ?? "";
     $categoryNewName = $_POST['categoryNewName'] ?? "";
-    $categoryStatus = Status::tryFrom($_POST['categoryStatus'] ?? "") ?? Status::tryFrom('inactive');
+    $categoryStatus = CategoryStatus::tryFrom($_POST['categoryStatus'] ?? "") ?? CategoryStatus::tryFrom('inactive');
     $isUpdated = $category->editCategory($categoryOldName, $categoryNewName, $categoryStatus);
 }
 
@@ -110,7 +110,7 @@ include_once('inc/header.php');
                                                         <div class="input-group input-group-merge">
                                                             <span id="category-<?php echo $index + 1; ?>-status2" class="input-group-text"><i class='bx bxs-circle'></i></span>
                                                             <select name="categoryStatus" class="form-select" id="category-<?php echo $index + 1; ?>-status" aria-label="Category Status">
-                                                                <?php foreach (Status::cases() as $enum) : ?>
+                                                                <?php foreach (CategoryStatus::cases() as $enum) : ?>
                                                                     <option <?php echo $singleCategory['category_status'] == $enum->value ? "selected" : ""; ?> value="<?php echo $enum->value; ?>"><?php echo $enum->value; ?></option>
                                                                 <?php endforeach; ?>
                                                             </select>

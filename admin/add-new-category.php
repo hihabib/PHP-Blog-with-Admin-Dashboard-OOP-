@@ -20,7 +20,7 @@ include_once('inc/header.php');
 $error = "";
 if ("POST" == $_SERVER['REQUEST_METHOD']) {
     $categoryName = $_POST['categoryName'] ?? "";
-    $categoryStatus = Status::tryFrom($_POST['categoryStatus'] ?? "inactive") ?? Status::tryFrom('inactive');
+    $categoryStatus = CategoryStatus::tryFrom($_POST['categoryStatus'] ?? "inactive") ?? CategoryStatus::tryFrom('inactive');
     if(strlen($categoryName) <= 0){
         $error = "Please enter category name";
     } else {
@@ -71,7 +71,7 @@ if ("POST" == $_SERVER['REQUEST_METHOD']) {
                             <div class="input-group input-group-merge">
                                 <span id="category-status2" class="input-group-text"><i class='bx bxs-circle'></i></span>
                                 <select name="categoryStatus" class="form-select" id="category-status" aria-label="Category Status">
-                                    <?php foreach(Status::cases() as $enum): ?>
+                                    <?php foreach(CategoryStatus::cases() as $enum): ?>
                                         <option value="<?php echo $enum->value; ?>"><?php echo $enum->value; ?></option>
                                     <?php endforeach; ?>
                                 </select>
