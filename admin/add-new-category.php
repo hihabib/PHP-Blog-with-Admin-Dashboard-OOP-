@@ -1,34 +1,47 @@
 <?php
-// initialize necessary script
+// Initialize necessary script
 include_once('inc/init.php');
 
-// include category 
+// Include the Category class
 include_once("classes/Category.php");
 
-// check login. If the user is not logged in user, then redirect the user to the login page
+// Check if the user is logged in. If not, redirect them to the login page.
 if (false == Session::checkLogin()) {
     header("Location: login.php");
-    die();
+    die(); // Terminate script execution after redirect.
 }
 
-// Menu and submenu name
+// Define main menu and submenu names for display purposes.
 $mainMenu = "Category";
 $subMenu = "Add New Category";
 
+// Include the header file, which likely contains HTML structure up to this point.
 include_once('inc/header.php');
 
-$error = "";
+$error = ""; // Initialize an error message variable.
+
+// Check if the HTTP request method is POST (form submission).
 if ("POST" == $_SERVER['REQUEST_METHOD']) {
-    $categoryName = $_POST['categoryName'] ?? "";
-    $categoryStatus = CategoryStatus::tryFrom($_POST['categoryStatus'] ?? "inactive") ?? CategoryStatus::tryFrom('inactive');
-    if(strlen($categoryName) <= 0){
+    // Retrieve and sanitize the 'categoryName' and 'categoryStatus' POST data.
+    $categoryName = $_POST['categoryName'] ?? ""; // Using the null coalescing operator to provide a default value.
+    $categoryStatus = CategoryStatus::tryFrom($_POST['categoryStatus'] ?? "inactive") ?? CategoryStatus::tryFrom('inactive'); // Setting a default value if 'categoryStatus' is not provided.
+
+    // Check if the 'categoryName' is empty. If so, set an error message.
+    if (strlen($categoryName) <= 0) {
         $error = "Please enter category name";
     } else {
+        // Create an instance of the Category class.
         $category = new Category();
+
+        // Attempt to add a new category with the provided information.
         $addedCategory = $category->addCategory($categoryName, $categoryStatus);
-        if(is_object($addedCategory)){
-            $error = $addedCategory -> message;
-        } else if(!$addedCategory){
+
+        // Check the result of adding the category.
+        if (is_object($addedCategory)) {
+            // If an object is returned, it likely contains an error message.
+            $error = $addedCategory->message;
+        } else if (!$addedCategory) {
+            // If the result is false, something went wrong during category addition.
             $error = "Something is wrong. Please try again";
         }
     }
