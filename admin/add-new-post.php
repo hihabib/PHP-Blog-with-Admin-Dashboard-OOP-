@@ -37,7 +37,7 @@ if ("POST" == $_SERVER['REQUEST_METHOD'] && isset($_POST['submitPost'])) {
 
     // Determine the post status from the form data, defaulting to 'Draft'
     $postStatus = PostStatus::tryFrom($_POST["postStatus"] ?? 'Draft') ?? PostStatus::tryFrom("Draft");
-    
+
     // Get the author's ID from the session (assuming a Session class is used)
     $authorID = (int)Session::get('id');
 
@@ -101,6 +101,7 @@ if ("POST" == $_SERVER['REQUEST_METHOD'] && isset($_POST['submitPost'])) {
 $mainMenu = "Post";
 $subMenu = "Add New Post";
 
+// include header
 include_once('inc/header.php');
 ?>
 <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Post/</span> Add new post</h4>
