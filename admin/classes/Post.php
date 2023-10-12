@@ -1,13 +1,12 @@
 <?php
 
+// Post Status'
 enum PostStatus:string {
     case PUBLISHED = 'Published';
     case DRAFT = 'Draft';
     case PROTECTED = 'Protected';
 }
 class Post {
-    
-
     /**
      * Get last serial of user uploaded post's thumbnail
      *
@@ -23,7 +22,6 @@ class Post {
         $thumbnailSerial = (int)$splitedThumnailName[0];
         return $thumbnailSerial;
     }
-
     /**
      * Create Blog Post which save data in database
      *

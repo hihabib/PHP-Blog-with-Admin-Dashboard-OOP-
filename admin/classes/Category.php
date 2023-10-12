@@ -1,10 +1,7 @@
 <?php
  include_once("../lib/Database.php");
 
- /**
-  * enum CategoryStatus
-  *
-  */
+ // Category status'
   enum CategoryStatus:string {
     case ACTIVE = 'active';
     case INACTIVE = 'inactive';
