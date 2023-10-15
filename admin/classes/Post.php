@@ -1,5 +1,7 @@
 <?php
 
+include_once("../lib/Database.php");
+
 // Post Status'
 enum PostStatus:string {
     case PUBLISHED = 'Published';
@@ -65,5 +67,21 @@ class Post {
             [$slug]
         );
         return !($result->num_rows > 0);
+    }
+
+    
+    /**
+     * Get All posts by author ID
+     *
+     * @param int $userID author id
+     * 
+     * @return array Associative array of all posts
+     * 
+     */
+    public static function getAllPost(int $userID):array{
+        global $connection;
+        $tableName = TBL_POST;
+        $result = $connection -> select("SELECT * FROM $tableName WHERE author_id = ? ORDER BY id", "s", [$userID]);
+        return $result -> fetch_all(MYSQLI_ASSOC);
     }
 }

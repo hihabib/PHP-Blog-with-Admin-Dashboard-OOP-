@@ -1,4 +1,9 @@
 <?php
+include_once("../lib/Debug.php");
+
+// Developer mode
+define("DEV", true);
+
 // Define database connection constants
 define("DB_HOST", 'localhost');  // The hostname or IP address of your database server
 define("DB_USER", 'root');       // The username to connect to the database
@@ -11,4 +16,13 @@ define("TBL_POST", 'posts');          // The name of the table for posts
 
 // Define the homepage URL
 define("HOMEPAGE", "http://localhost/stand-blog"); // The URL of your website's homepage
+
+// Define necessary directory names
+if(DEV){
+    define("UPLOADS", "uploads_dev");
+
+} else {
+    define("UPLOADS", "uploads");
+}
+define("POST_THUMBNAIL", "thumbnail");
 ?>

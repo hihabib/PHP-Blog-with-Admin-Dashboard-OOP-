@@ -5,6 +5,7 @@ include_once('inc/init.php');
 // Include necessary classes
 include_once('classes/Category.php');
 include_once('classes/Post.php');
+include_once('../lib/Utility.php');
 
 // Check if the user is logged in; if not, redirect to the login page
 if (false == Session::checkLogin()) {
@@ -71,9 +72,16 @@ if ("POST" == $_SERVER['REQUEST_METHOD'] && isset($_POST['submitPost'])) {
         // Construct the thumbnail file name with the serial number and extension
         $thumbnailName = $newThumbnailSerial . "." . $extName;
 
-        // Define the directory path where the thumbnail will be saved
-        $thumbnail_dir = dirname(__DIR__) . "\\uploads\\thumbnail\\$thumbnailName";
+        // Define the directory path where the thumbnail will be saved temporary
+        $tempDirectoryPath = dirname(__DIR__) . DIRECTORY_SEPARATOR . UPLOADS . DIRECTORY_SEPARATOR . POST_THUMBNAIL . DIRECTORY_SEPARATOR . 'temp';
 
+        // Check if the directory exists, and if not, create it
+        if (!file_exists($tempDirectoryPath)) {
+            mkdir($tempDirectoryPath, 0777, true); // The 'true' parameter creates nested directories if they don't exist
+        }
+
+        // Now, construct the complete path to the thumbnail
+        $tempThumbnailDir = $tempDirectoryPath . DIRECTORY_SEPARATOR . $thumbnailName;
         // If the slug field is empty, set an error message
         if (!strlen($slug) > 0) {
             $postDataError = "Slug must not be empty";
@@ -83,14 +91,59 @@ if ("POST" == $_SERVER['REQUEST_METHOD'] && isset($_POST['submitPost'])) {
                 $postDataError = "Slug not available. Please try with another slug";
             } else {
                 // Attempt to create the post using the provided data
-                $isPostCreated = Post::createPost($title, $content, $tags, $postStatus, $thumbnailName, $slug, $categoryId, $authorID);
+                $isPostCreated = Post::createPost($title, $content, $tags, $postStatus, $newThumbnailSerial . ".webp", $slug, $categoryId, $authorID);
 
                 // If the post creation was unsuccessful, set an error message
                 if (!$isPostCreated) {
                     $postDataError = "Something went wrong. Please try again.";
                 } else {
                     // Move the uploaded thumbnail to the specified directory
-                    move_uploaded_file($thumbnail, $thumbnail_dir);
+                    move_uploaded_file($thumbnail, $tempThumbnailDir);
+
+                    // Construct the thumbnail file name with the serial number and webp extension
+                    $thumbnailName = $newThumbnailSerial . ".webp";
+
+                    // Path for different sizes
+                    $featureThumbnailDir = dirname(__DIR__) . DIRECTORY_SEPARATOR . UPLOADS . DIRECTORY_SEPARATOR . POST_THUMBNAIL . DIRECTORY_SEPARATOR . 'feature' . DIRECTORY_SEPARATOR . $thumbnailName;
+
+                    if (!file_exists(dirname($featureThumbnailDir))) {
+                        mkdir(dirname($featureThumbnailDir), 0777, true); // The 'true' parameter creates nested directories if they don't exist
+                    }
+
+                    $blogThumbnailDir = dirname(__DIR__) . DIRECTORY_SEPARATOR . UPLOADS . DIRECTORY_SEPARATOR . POST_THUMBNAIL . DIRECTORY_SEPARATOR . 'blog' . DIRECTORY_SEPARATOR . $thumbnailName;
+
+                    if (!file_exists(dirname($blogThumbnailDir))) {
+                        mkdir(dirname($blogThumbnailDir), 0777, true); // The 'true' parameter creates nested directories if they don't exist
+                    }
+
+
+                    $bannerThumbnailDir = dirname(__DIR__) . DIRECTORY_SEPARATOR . UPLOADS . DIRECTORY_SEPARATOR . POST_THUMBNAIL . DIRECTORY_SEPARATOR . 'banner' . DIRECTORY_SEPARATOR . $thumbnailName;
+
+                    if (!file_exists(dirname($bannerThumbnailDir))) {
+                        mkdir(dirname($bannerThumbnailDir), 0777, true); // The 'true' parameter creates nested directories if they don't exist
+                    }
+
+
+                    $tinyThumbnailDir = dirname(__DIR__) . DIRECTORY_SEPARATOR . UPLOADS . DIRECTORY_SEPARATOR . POST_THUMBNAIL . DIRECTORY_SEPARATOR . 'tiny' . DIRECTORY_SEPARATOR . $thumbnailName;
+
+                    if (!file_exists(dirname($tinyThumbnailDir))) {
+                        mkdir(dirname($tinyThumbnailDir), 0777, true); // The 'true' parameter creates nested directories if they don't exist
+                    }
+
+                    // compreess image
+                    if (file_exists($tempThumbnailDir)) {
+
+                        Utility::compressAndResizeImage($tempThumbnailDir, $blogThumbnailDir, 730, 322);
+
+                        Utility::compressAndResizeImage($tempThumbnailDir,  $featureThumbnailDir, 408, 353);
+
+                        Utility::compressAndResizeImage($tempThumbnailDir,  $bannerThumbnailDir, 1580, 300);
+
+                        Utility::compressAndResizeImage($tempThumbnailDir,  $tinyThumbnailDir, 150, 150);
+
+                        // delete user uploaded thumbnail
+                        unlink($tempThumbnailDir);
+                    }
                 }
             }
         }
