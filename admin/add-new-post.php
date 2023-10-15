@@ -19,33 +19,17 @@ if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['submitPost'])) {
     // Initialize a variable to store errors related to the post thumbnail
     $thumbnailError = "";
 
-    // Get and sanitize the post title from the form data
+    // Sanitize and retrieve the post data
     $title = htmlspecialchars($_POST['postTitle']) ?? "";
-
-    // Get and sanitize the post content from the form data
     $content = htmlspecialchars($_POST['postDetailsContainer']) ?? "";
-
-    // Get and sanitize the post slug from the form data
     $slug = htmlspecialchars($_POST['postSlug']);
-
-    // Get and sanitize the post tags from the form data (if provided)
     $tags = htmlspecialchars($_POST['postTags'] ?? "");
-
-    // Get the selected category ID from the form data and ensure it's an integer
     $categoryId = (int)htmlspecialchars($_POST['postCategory'] ?? "");
-
-    // Determine the post status from the form data, defaulting to 'Draft'
     $postStatus = PostStatus::tryFrom($_POST["postStatus"] ?? 'Draft') ?? PostStatus::tryFrom("Draft");
-
-    // Get the author's ID from the session (assuming a Session class is used)
     $authorID = (int)Session::get('id');
-
-    // Get the temporary location of the uploaded thumbnail image
     $thumbnail = $_FILES['thumbnail']['tmp_name'];
+    $extName = strtolower(pathinfo($_FILES['thumbnail']['name'], PATHINFO_EXTENSION));
 
-    // Split the file name by dots to extract the file extension
-    $splitedName = explode(".", $_FILES['thumbnail']['name']);
-    $extName = strtolower(end($splitedName));
 
     // Define an array of allowed image file extensions
     $allowedExtension = ['png', 'jpg', 'jpeg', 'webp'];
@@ -60,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['submitPost'])) {
     }
 
     // If there are no thumbnail errors
-    if (strlen($thumbnailError) == 0) {
+    if (empty($thumbnailError)) {
         // Initialize a variable to store potential errors related to post data
         $postDataError = "";
 
@@ -82,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['submitPost'])) {
         $tempThumbnailDir = $tempDirectoryPath . DIRECTORY_SEPARATOR . $thumbnailName;
 
         // If the slug field is empty, set an error message
-        if (strlen($slug) == 0) {
+        if (empty($slug)) {
             $postDataError = "Slug must not be empty";
         } else {
             // Check slug availability
@@ -103,35 +87,19 @@ if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['submitPost'])) {
                     $thumbnailName = $newThumbnailSerial . ".webp";
 
                     // Paths for different thumbnail sizes
-                    $featureThumbnailDir = dirname(__DIR__) . DIRECTORY_SEPARATOR . UPLOADS . DIRECTORY_SEPARATOR . POST_THUMBNAIL . DIRECTORY_SEPARATOR . 'feature' . DIRECTORY_SEPARATOR . $thumbnailName;
-                    $blogThumbnailDir = dirname(__DIR__) . DIRECTORY_SEPARATOR . UPLOADS . DIRECTORY_SEPARATOR . POST_THUMBNAIL . DIRECTORY_SEPARATOR . 'blog' . DIRECTORY_SEPARATOR . $thumbnailName;
-                    $bannerThumbnailDir = dirname(__DIR__) . DIRECTORY_SEPARATOR . UPLOADS . DIRECTORY_SEPARATOR . POST_THUMBNAIL . DIRECTORY_SEPARATOR . 'banner' . DIRECTORY_SEPARATOR . $thumbnailName;
-                    $tinyThumbnailDir = dirname(__DIR__) . DIRECTORY_SEPARATOR . UPLOADS . DIRECTORY_SEPARATOR . POST_THUMBNAIL . DIRECTORY_SEPARATOR . 'tiny' . DIRECTORY_SEPARATOR . $thumbnailName;
+                    $thumbnailSizes = ['blog' => [730, 322], 'feature' => [408, 353], 'banner' => [1580, 300], 'tiny' => [150, 150]];
 
                     // Create directories for different thumbnail sizes if they don't exist
-                    foreach ([$featureThumbnailDir, $blogThumbnailDir, $bannerThumbnailDir, $tinyThumbnailDir] as $dir) {
-                        if (!file_exists(dirname($dir))) {
-                            mkdir(dirname($dir), 0777, true); // The 'true' parameter creates nested directories if they don't exist
+                    foreach ($thumbnailSizes as $size => $dimensions) {
+                        $thumbnailDir = dirname(__DIR__) . DIRECTORY_SEPARATOR . UPLOADS . DIRECTORY_SEPARATOR . POST_THUMBNAIL . DIRECTORY_SEPARATOR . $size . DIRECTORY_SEPARATOR . $thumbnailName;
+                        if (!file_exists(dirname($thumbnailDir))) {
+                            mkdir(dirname($thumbnailDir), 0777, true); // The 'true' parameter creates nested directories if they don't exist
                         }
+                        Utility::compressAndResizeImage($tempThumbnailDir, $thumbnailDir, $dimensions[0], $dimensions[1]);
                     }
 
-                    // Compress and resize the image for different thumbnail sizes
-                    if (file_exists($tempThumbnailDir)) {
-                        // Create Blog Thumbnail with width: 730px; height: 322px
-                        Utility::compressAndResizeImage($tempThumbnailDir, $blogThumbnailDir, 730, 322);
-                        
-                        // Create Feature Thumbnail with width: 408px; height: 353px
-                        Utility::compressAndResizeImage($tempThumbnailDir, $featureThumbnailDir, 408, 353);
-                        
-                        // Create Banner Thumbnail with width: 1580px; height: 300px
-                        Utility::compressAndResizeImage($tempThumbnailDir, $bannerThumbnailDir, 1580, 300);
-                        
-                        // Create Tiny Thumbnail with width: 150px; height: 150px
-                        Utility::compressAndResizeImage($tempThumbnailDir, $tinyThumbnailDir, 150, 150);
-
-                        // Delete the user uploaded thumbnail
-                        unlink($tempThumbnailDir);
-                    }
+                    // Delete the user uploaded thumbnail
+                    unlink($tempThumbnailDir);
                 }
             }
         }
@@ -145,6 +113,7 @@ $subMenu = "Add New Post";
 // Include the header
 include_once('inc/header.php');
 ?>
+
 <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Post/</span> Add new post</h4>
 <div class="row">
     <div class="col-xxl">
