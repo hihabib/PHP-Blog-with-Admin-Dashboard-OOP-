@@ -87,7 +87,12 @@ if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['submitPost'])) {
                     $thumbnailName = $newThumbnailSerial . ".webp";
 
                     // Paths for different thumbnail sizes
-                    $thumbnailSizes = ['blog' => [730, 322], 'feature' => [408, 353], 'banner' => [1580, 300], 'tiny' => [150, 150]];
+                    $thumbnailSizes = [
+                        'blog' => [730, 322], 
+                        'feature' => [408, 353], 
+                        'banner' => [1580, 300], 
+                        'tiny' => [150, 150]
+                    ];
 
                     // Create directories for different thumbnail sizes if they don't exist
                     foreach ($thumbnailSizes as $size => $dimensions) {
