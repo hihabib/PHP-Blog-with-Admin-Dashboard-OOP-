@@ -1,8 +1,6 @@
 <?php
-// Initialize necessary script
+// Include necessary scripts and classes
 include_once('inc/init.php');
-
-// Include necessary classes
 include_once('classes/Category.php');
 include_once('classes/Post.php');
 include_once('../lib/Utility.php');
@@ -13,11 +11,11 @@ if (false == Session::checkLogin()) {
     die();
 }
 
-// Create a new Category object (assuming the Category class is defined elsewhere)
+// Create a new Category object
 $category = new Category();
 
 // Check if the form has been submitted using the POST method and if the 'submitPost' field is set
-if ("POST" == $_SERVER['REQUEST_METHOD'] && isset($_POST['submitPost'])) {
+if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['submitPost'])) {
     // Initialize a variable to store errors related to the post thumbnail
     $thumbnailError = "";
 
@@ -54,7 +52,7 @@ if ("POST" == $_SERVER['REQUEST_METHOD'] && isset($_POST['submitPost'])) {
 
     // Check if the file extension is in the list of allowed extensions
     if (!in_array($extName, $allowedExtension)) {
-        $thumbnailError = "File can only contain" . implode(", ", $allowedExtension);
+        $thumbnailError = "File can only contain " . implode(", ", $allowedExtension);
     }
     // Check if the file is a valid image
     else if (!getimagesize($thumbnail)) {
@@ -62,7 +60,7 @@ if ("POST" == $_SERVER['REQUEST_METHOD'] && isset($_POST['submitPost'])) {
     }
 
     // If there are no thumbnail errors
-    if (!strlen($thumbnailError) > 0) {
+    if (strlen($thumbnailError) == 0) {
         // Initialize a variable to store potential errors related to post data
         $postDataError = "";
 
@@ -72,7 +70,7 @@ if ("POST" == $_SERVER['REQUEST_METHOD'] && isset($_POST['submitPost'])) {
         // Construct the thumbnail file name with the serial number and extension
         $thumbnailName = $newThumbnailSerial . "." . $extName;
 
-        // Define the directory path where the thumbnail will be saved temporary
+        // Define the directory path where the thumbnail will be saved temporarily
         $tempDirectoryPath = dirname(__DIR__) . DIRECTORY_SEPARATOR . UPLOADS . DIRECTORY_SEPARATOR . POST_THUMBNAIL . DIRECTORY_SEPARATOR . 'temp';
 
         // Check if the directory exists, and if not, create it
@@ -82,8 +80,9 @@ if ("POST" == $_SERVER['REQUEST_METHOD'] && isset($_POST['submitPost'])) {
 
         // Now, construct the complete path to the thumbnail
         $tempThumbnailDir = $tempDirectoryPath . DIRECTORY_SEPARATOR . $thumbnailName;
+
         // If the slug field is empty, set an error message
-        if (!strlen($slug) > 0) {
+        if (strlen($slug) == 0) {
             $postDataError = "Slug must not be empty";
         } else {
             // Check slug availability
@@ -103,49 +102,34 @@ if ("POST" == $_SERVER['REQUEST_METHOD'] && isset($_POST['submitPost'])) {
                     // Construct the thumbnail file name with the serial number and webp extension
                     $thumbnailName = $newThumbnailSerial . ".webp";
 
-                    // Path for different sizes
+                    // Paths for different thumbnail sizes
                     $featureThumbnailDir = dirname(__DIR__) . DIRECTORY_SEPARATOR . UPLOADS . DIRECTORY_SEPARATOR . POST_THUMBNAIL . DIRECTORY_SEPARATOR . 'feature' . DIRECTORY_SEPARATOR . $thumbnailName;
-
-                    if (!file_exists(dirname($featureThumbnailDir))) {
-                        mkdir(dirname($featureThumbnailDir), 0777, true); // The 'true' parameter creates nested directories if they don't exist
-                    }
-
                     $blogThumbnailDir = dirname(__DIR__) . DIRECTORY_SEPARATOR . UPLOADS . DIRECTORY_SEPARATOR . POST_THUMBNAIL . DIRECTORY_SEPARATOR . 'blog' . DIRECTORY_SEPARATOR . $thumbnailName;
-
-                    if (!file_exists(dirname($blogThumbnailDir))) {
-                        mkdir(dirname($blogThumbnailDir), 0777, true); // The 'true' parameter creates nested directories if they don't exist
-                    }
-
-
                     $bannerThumbnailDir = dirname(__DIR__) . DIRECTORY_SEPARATOR . UPLOADS . DIRECTORY_SEPARATOR . POST_THUMBNAIL . DIRECTORY_SEPARATOR . 'banner' . DIRECTORY_SEPARATOR . $thumbnailName;
-
-                    if (!file_exists(dirname($bannerThumbnailDir))) {
-                        mkdir(dirname($bannerThumbnailDir), 0777, true); // The 'true' parameter creates nested directories if they don't exist
-                    }
-
-
                     $tinyThumbnailDir = dirname(__DIR__) . DIRECTORY_SEPARATOR . UPLOADS . DIRECTORY_SEPARATOR . POST_THUMBNAIL . DIRECTORY_SEPARATOR . 'tiny' . DIRECTORY_SEPARATOR . $thumbnailName;
 
-                    if (!file_exists(dirname($tinyThumbnailDir))) {
-                        mkdir(dirname($tinyThumbnailDir), 0777, true); // The 'true' parameter creates nested directories if they don't exist
+                    // Create directories for different thumbnail sizes if they don't exist
+                    foreach ([$featureThumbnailDir, $blogThumbnailDir, $bannerThumbnailDir, $tinyThumbnailDir] as $dir) {
+                        if (!file_exists(dirname($dir))) {
+                            mkdir(dirname($dir), 0777, true); // The 'true' parameter creates nested directories if they don't exist
+                        }
                     }
 
-                    // compreess image
+                    // Compress and resize the image for different thumbnail sizes
                     if (file_exists($tempThumbnailDir)) {
-
-                        // create Blog Thumbnail with width: 730px; height: 322px
+                        // Create Blog Thumbnail with width: 730px; height: 322px
                         Utility::compressAndResizeImage($tempThumbnailDir, $blogThumbnailDir, 730, 322);
                         
-                        // create Feature Thumbnail with width: 408px; height: 353px
-                        Utility::compressAndResizeImage($tempThumbnailDir,  $featureThumbnailDir, 408, 353);
+                        // Create Feature Thumbnail with width: 408px; height: 353px
+                        Utility::compressAndResizeImage($tempThumbnailDir, $featureThumbnailDir, 408, 353);
                         
-                        // create Banner Thumbnail with width: 1580px; height: 300px
-                        Utility::compressAndResizeImage($tempThumbnailDir,  $bannerThumbnailDir, 1580, 300);
+                        // Create Banner Thumbnail with width: 1580px; height: 300px
+                        Utility::compressAndResizeImage($tempThumbnailDir, $bannerThumbnailDir, 1580, 300);
                         
-                        // create Tiny Thumbnail with width: 150px; height: 150px
-                        Utility::compressAndResizeImage($tempThumbnailDir,  $tinyThumbnailDir, 150, 150);
+                        // Create Tiny Thumbnail with width: 150px; height: 150px
+                        Utility::compressAndResizeImage($tempThumbnailDir, $tinyThumbnailDir, 150, 150);
 
-                        // delete user uploaded thumbnail
+                        // Delete the user uploaded thumbnail
                         unlink($tempThumbnailDir);
                     }
                 }
@@ -158,7 +142,7 @@ if ("POST" == $_SERVER['REQUEST_METHOD'] && isset($_POST['submitPost'])) {
 $mainMenu = "Post";
 $subMenu = "Add New Post";
 
-// include header
+// Include the header
 include_once('inc/header.php');
 ?>
 <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Post/</span> Add new post</h4>
