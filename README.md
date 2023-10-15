@@ -16,7 +16,7 @@ This project provides an Author Dashboard with the following features:
   - Tags
   - Category
   - Slug
-  - Thumbnail <b style="color: red">(With Image Compression feature)</b>
+  - Thumbnail <b style="color: red">(With WebP Image Compression feature)</b>
   - Status (can be one of 'Published', 'Draft', or 'Protected').
 
 ### Post Statuses
