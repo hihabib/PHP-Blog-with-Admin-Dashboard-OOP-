@@ -133,12 +133,16 @@ if ("POST" == $_SERVER['REQUEST_METHOD'] && isset($_POST['submitPost'])) {
                     // compreess image
                     if (file_exists($tempThumbnailDir)) {
 
+                        // create Blog Thumbnail with width: 730px; height: 322px
                         Utility::compressAndResizeImage($tempThumbnailDir, $blogThumbnailDir, 730, 322);
-
+                        
+                        // create Feature Thumbnail with width: 408px; height: 353px
                         Utility::compressAndResizeImage($tempThumbnailDir,  $featureThumbnailDir, 408, 353);
-
+                        
+                        // create Banner Thumbnail with width: 1580px; height: 300px
                         Utility::compressAndResizeImage($tempThumbnailDir,  $bannerThumbnailDir, 1580, 300);
-
+                        
+                        // create Tiny Thumbnail with width: 150px; height: 150px
                         Utility::compressAndResizeImage($tempThumbnailDir,  $tinyThumbnailDir, 150, 150);
 
                         // delete user uploaded thumbnail
